@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "lambda_code_bucket" {
-  bucket = "my-unique-lambda-code-bucket-12345678889966-vasim"  # ✅ Only one `bucket =`
+  bucket = "bokkalolife567843"  # ✅ Your provided bucket name
   acl    = "private"
 }
 
