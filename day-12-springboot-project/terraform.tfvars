@@ -1,0 +1,10 @@
+vpc_id     = "vpc-0ae7a63e1eb2d42b4"
+subnet_1   = "subnet-0e1445ce49c7a00f9"
+subnet_2   = "subnet-063ed624c0e5001a7"
+ami_id     = "ami-020cba7c55df1f615"
+key_name   = "TERRAFORM"
+aws_region = "us-east-1"
+
+rds_db_name   = "akram"
+rds_username  = "admin"
+rds_password  = "admin123"
