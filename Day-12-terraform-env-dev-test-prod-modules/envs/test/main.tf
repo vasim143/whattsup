@@ -1,21 +1,12 @@
 provider "aws" {
-  region = var.region
-  #profile = "test"
+  region = "us-east-1"
 }
-
-module "vpc" {
-  source              = "../../modules/vpc"
-  cidr_block          = var.vpc_cidr
-  public_subnet_cidr  = var.public_subnet_cidr
-  availability_zone   = var.availability_zone
-  env                 = var.env
-}
-
 
 module "ec2" {
-  source        = "../../modules/ec2"
-  instance_type = var.instance_type
-  env           = var.env
-  ami_id = var.ami_id
-  subnet_id = module.vpc.public_subnet_id
+  source            = "../../modules/ec2"
+  ami_id            = var.ami_id
+  instance_type     = var.instance_type
+  subnet_id         = var.subnet_id
+  security_group_id = var.security_group_id
+  environment       = var.environment
 }

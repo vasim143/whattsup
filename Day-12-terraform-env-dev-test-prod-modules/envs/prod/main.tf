@@ -1,19 +1,10 @@
-provider "aws" {
-  region = var.region
-  #profile = "prod"
-}
-
-module "vpc" {
-  source              = "../../modules/vpc"
-  cidr_block          = var.vpc_cidr
-  public_subnet_cidr  = var.public_subnet_cidr
-  availability_zone   = var.availability_zone
-  env                 = var.env
-}
-module "ec2" {
-  source        = "../../modules/ec2"
+resource "aws_instance" "this" {
+  ami           = "ami-0abcdef1234567890"  # Replace with a valid Ubuntu AMI ID for your region
   instance_type = var.instance_type
-  env           = var.env
-  ami_id = var.ami_id
-  subnet_id = module.vpc.public_subnet_id
+  subnet_id     = var.subnet_id
+  vpc_security_group_ids = [var.security_group_id]
+
+  tags = {
+    Name = "${var.environment}-ec2"
+  }
 }

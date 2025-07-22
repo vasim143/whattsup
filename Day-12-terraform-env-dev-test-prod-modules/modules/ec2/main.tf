@@ -1,12 +1,14 @@
-resource "aws_instance" "main" {
-  count         = var.instance_count
-  ami           = var.ami_id
-  instance_type = var.instance_type
-  #key_name      = var.key_name
-  subnet_id     = element(var.subnet_ids, count.index % length(var.subnet_ids))
-  vpc_security_group_ids = var.security_group_ids
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  owners      = ["099720109477"] # Canonical
 
-  tags = {
-    Name = "terraform-ec2-${count.index + 1}"
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
   }
 }
