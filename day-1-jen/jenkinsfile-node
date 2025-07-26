@@ -1,0 +1,45 @@
+properties([
+    parameters([
+        choice(name: 'action', choices: ['apply', 'destroy'], description: 'Choose Terraform action')
+    ])
+])
+
+node {
+    stage('Checkout') {
+        git branch: 'main', url: 'https://github.com/CloudTechDevOps/terraform0730am.git'
+    }
+
+    stage('Terraform Init') {
+        dir('Day-3-tfvars') {
+            sh 'terraform init'
+        }
+    }
+
+    stage('Terraform Validate') {
+        dir('Day-3-tfvars') {
+            sh 'terraform validate'
+        }
+    }
+
+    stage('Terraform Plan (only for apply)') {
+        if (params.action == 'apply') {
+            dir('Day-3-tfvars') {
+                sh 'terraform plan -out=tfplan'
+            }
+        }
+    }
+
+    stage('Terraform Apply or Destroy') {
+        dir('Day-3-tfvars') {
+            if (params.action == 'apply') {
+                sh 'terraform apply -auto-approve tfplan'
+            } else if (params.action == 'destroy') {
+                sh 'terraform destroy -auto-approve'
+            }
+        }
+    }
+
+    stage('Done') {
+        echo "Terraform ${params.action} completed successfully!"
+    }
+}

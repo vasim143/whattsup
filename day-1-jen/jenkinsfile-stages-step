@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(
+            name: 'action',
+            choices: ['apply', 'destroy'],
+            description: 'Choose Terraform action to execute'
+        )
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/CloudTechDevOps/terraform0730am.git'
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                dir('Day-3-tfvars') {
+                    sh 'terraform init'
+                }
+            }
+        }
+
+        stage('Terraform Validate') {
+            steps {
+                dir('Day-3-tfvars') {
+                    sh 'terraform validate'
+                }
+            }
+        }
+
+        stage('Terraform Plan (only if action is apply)') {
+            when {
+                expression { params.action == 'apply' }
+            }
+            steps {
+                dir('Day-3-tfvars') {
+                    sh 'terraform plan -out=tfplan'
+                }
+            }
+        }
+
+        stage('Terraform Apply or Destroy') {
+            steps {
+                dir('Day-3-tfvars') {
+                    script {
+                        if (params.action == 'apply') {
+                            sh 'terraform apply -auto-approve tfplan'
+                        } else if (params.action == 'destroy') {
+                            sh 'terraform destroy -auto-approve'
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Terraform ${params.action} stage completed."
+        }
+    }
+}
